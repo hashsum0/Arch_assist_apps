@@ -1,6 +1,7 @@
 #!/bin/bash
 loadkeys ru
 setfont cyr-sun16
+clear
 echo -e "\x1B[34m \n" \
 "                   -\`                     \n" \
 "                  .o+\`                    \n" \
@@ -36,7 +37,7 @@ function inet_test {
                     if [ "$var" == "y" ]
                     then
                         var=$(ping -c3 8.8.8.8 | awk '/transmitted/{print $1+$4}')
-                        if [ $var  == "2" ]
+                        if [ $var  == "6" ]
                         then echo -e "\x1B[32m""Есть соединение с интернетом""\x1B[0m"
                         else echo -e "\x1B[32m""Соединение с интернетом нет!""\x1B[0m"
                              echo -e "\x1B[32m""Пожалуйста, настройте соединение с интернетом""\x1B[0m"
