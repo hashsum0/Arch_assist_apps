@@ -1,5 +1,5 @@
 #!/bin/bash
-#проверка русской локали
+
 echo -e "\x1B[34m \n" \
 "                   -\`                     \n" \
 "                  .o+\`                    \n" \
@@ -34,7 +34,7 @@ function inet_test {
                 read var
                     if [ "$var" == "y" ]
                     then
-                        var=$(ping -c1 8.8.8.8 | awk '/transmitted/{print $1+$4}')
+                        var=$(ping -c3 8.8.8.8 | awk '/transmitted/{print $1+$4}')
                         if [ $var  == "2" ]
                         then echo -e "\x1B[32m""Есть соединение с интернетом""\x1B[0m"
                         else echo -e "\x1B[32m""Соединение с интернетом нет!""\x1B[0m"
