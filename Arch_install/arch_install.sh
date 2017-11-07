@@ -29,54 +29,54 @@ d_home=0
 step=0
 #********************************************************************************************1-inet_test
 function inet_test {        
-        echo -e "\x1B[32m""The internet, connection test""\x1B[0m"
-            echo "Continue?  y/N"
+        echo -e "\x1B[32m""Интернет, проверка соединения""\x1B[0m"
+            echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
                         var=$(ping -c1 8.8.8.8 | awk '/transmitted/{print $1+$4}')
                         if [ $var  == "2" ]
-                        then echo -e "\x1B[32m""The internet, connection ok""\x1B[0m"
-                        else echo -e "\x1B[32m""The internet connect error""\x1B[0m"
-                             echo -e "\x1B[32m""Please connecting to the internet""\x1B[0m"
+                        then echo -e "\x1B[32m""Есть соединение с интернетом""\x1B[0m"
+                        else echo -e "\x1B[32m""Соединение с интернетом нет!""\x1B[0m"
+                             echo -e "\x1B[32m""Пожалуйста, настройте соединение с интернетом""\x1B[0m"
                         fi
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi    
         }
         
 #*********************************************************************************************2-parted_disk       
 function parted_disk {
-        echo -e "\x1B[36m""Parted disk""\x1B[0m"
-            echo "Continue?  y/N"
+        echo -e "\x1B[36m""Разбить диск на разделы""\x1B[0m"
+            echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
-                        echo -e "\x1B[35m""Enter name disk for parted (for example a - sda)""\x1B[0m"
+                        echo -e "\x1B[35m""Введите имя устройства (например sda)""\x1B[0m"
                         read var
                         sudo cfdisk "/dev/"$var
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************3-assign_sections
 function assign_sections {
-        echo -e "\x1B[36m""Assign sections""\x1B[0m"
-            echo "Continue? y/N"
+        echo -e "\x1B[36m""Выбор точки монтирования для каждого раздела""\x1B[0m"
+            echo "Продолжить? y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
-                        echo "enter name target disk (sd(a,b,c))"
+                        echo "Введите имя целевого устройства (например sda)"
                         read var
                         d_target="/dev/"$var
-                        echo "enter name disk (sd(a,b,c)(1,2,3,4..)) for boot"
+                        echo "Введите имя раздела (например sda1) для boot"
                         read var
                         d_boot="/dev/"$var   
-                        echo "enter name disk (sd(a,b,c)(1,2,3,4..)) for root"
+                        echo "Введите имя раздела (например sda2) для root"
                         read var
                         d_root="/dev/"$var
-                        echo "enter name disk (sd(a,b,c)(1,2,3,4..)) for swap"
+                        echo "Введите имя раздела (например sda3) для swap"
                         read var
                         d_swap="/dev/"$var
-                        echo "enter name disk (sd(a,b,c)(1,2,3,4..)) for home"
+                        echo "Введите имя раздела (sнапример sda4) для home"
                         read var
                         d_home="/dev/"$var
                         echo "target:"$d_target
@@ -84,14 +84,14 @@ function assign_sections {
                         echo "for root:"$d_root
                         echo "for swap:"$d_swap
                         echo "for home:"$d_home
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************4-formating_disk
 function formating_disk {
-        echo -e "\x1B[36m""Formating disk""\x1B[0m"
+        echo -e "\x1B[36m""Форматирование разделов""\x1B[0m"
                 
-            echo "Continue?  y/N"
+            echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
@@ -102,14 +102,14 @@ function formating_disk {
                         mkfs.ext2 $d_boot
                         mkfs.ext4 $d_root
                         mkfs.ext4 $d_home
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
                 lsblk -f
             }
 #********************************************************************************************5-mounting_disk
 function mounting_disk {        
-        echo -e "\x1B[36m""Mounting disk""\x1B[0m"
-            echo "Continue?  y/N"
+        echo -e "\x1B[36m""Монтирование разделов""\x1B[0m"
+            echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
@@ -144,190 +144,197 @@ function mounting_disk {
                             else
                                 mount $d_home /mnt/home
                             fi
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
                 lsblk -f
             }
 #********************************************************************************************6-edit_mirrorlist
 function edit_mirrorlist {
-        echo -e "\x1B[36m""Edit mirrorlist""\x1B[0m"      
-            echo "Continue? y/N "
+        echo -e "\x1B[36m""Редактировать список зеркал""\x1B[0m"      
+            echo "Продолжить? y/N "
                 read var 
                 if [ "$var" == "y" ]
                 then
-                     echo   "nano /etc/pacman.d/mirrorlist"
-                else echo "Skip"
+                     nano /etc/pacman.d/mirrorlist
+                else echo "Пропустили."
                 fi
             }
   
 #********************************************************************************************7-pacman_update
 function pacman_update {
-        echo -e "\x1B[36m""Update pacman""\x1B[0m"
-            echo "Continue?  y/N"
+        echo -e "\x1B[36m""Обновляем список пакетов pacman""\x1B[0m"
+            echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
                         pacman -Syy
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************8-istall_base
 function istall_base {
-        echo -e "\x1B[36m""Install base pakages""\x1B[0m"
-            echo "Continue?  y/N"
+        echo -e "\x1B[36m""Установка основных пакетов""\x1B[0m"
+            echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
                         pacstrap /mnt base base-devel
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************9-generate_fstab
 function generate_fstab {
-        echo -e "\x1B[36m""Generate fstab""\x1B[0m"
-            echo "Continue?  y/N"
+        echo -e "\x1B[36m""Генерация fstab""\x1B[0m"
+            echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
                         genfstab -pU /mnt >> /mnt/etc/fstab
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************10-goto_arch_chroot
 function goto_arch_chroot {
-        echo -e "\x1B[36m""Go in arch-chroot""\x1B[0m"
+        echo -e "\x1B[36m""Переходим в arch-chroot""\x1B[0m"
+        echo -e "\x1B[36m""После выполнения этого пункта""\x1B[0m"
+        echo -e "\x1B[36m""произойдет копирование этого скрипта""\x1B[0m"
+        echo -e "\x1B[36m""в /mnt/home и переход в arch-chroot""\x1B[0m"
+        echo -e "\x1B[36m""для продолжения нужно перейти в папку /home""\x1B[0m"
+        echo -e "\x1B[36m""и запустить скрипт, в меню выбрать пункт 6""\x1B[0m"
+        echo -e "\x1B[36m""и из списка выбрать 11 шаг""\x1B[0m"
             echo "Continue?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
                         cp arch_install /mnt/home
                         arch-chroot /mnt
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************11-grub_pkg_install
 function grub_pkg_install {
-        echo -e "\x1B[36m""Grub install""\x1B[0m"
-        echo "Continue?  y/N"
+        echo -e "\x1B[36m""Установка пакета загрузчика""\x1B[0m"
+        echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
                         pacman -S grub
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************12-pakages_install
 function pakages_install {
-            echo -e "\x1B[36m""Pakages for install""\x1B[0m"
-                echo "Continue?  y/N"
+            echo -e "\x1B[36m""Установка дополнительных пакетов""\x1B[0m"
+                echo "Продолжить?  y/N"
                     read var
                         if [ "$var" == "y" ]
                         then
-                            echo "Enter pakages name for install "
+                            echo "Введите названия необходимых пакетов разделяя пробелом "
                             read var
                             pacman -S $var
-                        else echo "Skip"
+                        else echo "Пропустили."
                         fi
             }
 #********************************************************************************************13-host_name
 function host_name {
-            echo -e "\x1B[36m""Edit host name""\x1B[0m"
-                echo "Continue?  y/N"
+            echo -e "\x1B[36m""Имя машины""\x1B[0m"
+                echo "Продолжить?  y/N"
                     read var
                         if [ "$var" == "y" ]
                         then
-                            echo "Enter host name:"
+                            echo "Введите имя машины:"
                             read var
                             echo $var > /etc/hostname
-                        else echo "Skip"
+                        else echo "Пропустили."
                         fi
             }
 #********************************************************************************************14-time_zone
 function time_zone {
-            echo -e "\x1B[36m""Edit time zone""\x1B[0m"
-                echo "Continue?  y/N"
+            echo -e "\x1B[36m""Выбор часового пояса""\x1B[0m"
+                echo "Продолжить?  y/N"
                     read var
                         if [ "$var" == "y" ]
                         then
                             ls /usr/share/zoneinfo/Europe
-                            echo "Enter select time_zone"
+                            echo "Выберите из списка часовой пояс"
                             read var
+                            rm /etc/localtime
                             ln -s /usr/share/zoneinfo/Europe/$var /etc/localtime
-                        else echo "Skip"
+                        else echo "Пропустили."
                         fi
             }
 #********************************************************************************************15-edit_locale
 function edit_locale {
-        echo -e "\x1B[36m""Edit locale""\x1B[0m"      
-            echo "Continue? y/N "
+        echo -e "\x1B[36m""Язык системы""\x1B[0m"      
+            echo "Продолжить? y/N "
                 read var 
                 if [ "$var" == "y" ]
                 then
-                     echo   "uncomment the necessary in locale.gen"
-                     read -s -n1 -p $'\x1B[32m press any key to continue \x1B[0m'
+                     echo   "Разкоментируйте нужные локали в файле locale.gen"
+                     read -s -n1 -p $'\x1B[32m Нажмите любую клавишу для продолжения. \x1B[0m'
                      nano /etc/locale.gen
-                     echo   "Enter select locale (for example a - LANG=en_US.UTF-8)"
-                     read -s -n1 -p $'\x1B[32m press any key to continue \x1B[0m'
+                     echo   "Впишите нужную локаль в файл locale.conf (например LANG=en_US.UTF-8)"
+                     read -s -n1 -p $'\x1B[32m Нажмите любую клавишу для продолжения. \x1B[0m'
                      nano /etc/locale.conf
-                     echo   "nano /etc/locale.gen"
-                else echo "Skip"
+                else echo "Пропустили."
                 fi
-            echo "Generate locale, Continue? y/N "
+            echo "Генерируем локаль, продолжить? y/N "
                 read var 
                 if [ "$var" == "y" ]
                 then
                      locale-gen
-                else echo "Skip"
+                else echo "Пропустили."
                 fi
             }
 #********************************************************************************************16-create_linux_img
 function create_linux_img {
-        echo -e "\x1B[36m""Create linux_img""\x1B[0m"
-        echo "Continue?  y/N"
+        echo -e "\x1B[36m""Создаем linux_img""\x1B[0m"
+        echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
                         mkinitcpio -p linux
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************17-grub_config
 function grub_config {
-        echo -e "\x1B[36m""Grub config""\x1B[0m"
-        echo "Continue?  y/N"
+        echo -e "\x1B[36m""Обновляем конфигурацию GRUB""\x1B[0m"
+        echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
                         grub-mkconfig -o /boot/grub/grub.cfg
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************18-bootloader_installation
 function bootloader_installation {
-        echo -e "\x1B[36m""Bootloader installation""\x1B[0m"
-        echo "Continue?  y/N"
+        echo -e "\x1B[36m""Установка загрузчика""\x1B[0m"
+        echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
                         if [ $d_target -eq 0 ]
                         then
-                            echo "enter name target disk (sd(a,b,c))"
+                            echo "Введите имя целевого устройства (sd(a,b,c))"
                             read var
                             d_target="/dev/"$var
                         fi
                         grub-install $d_target
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************19-create_pass_root
 function create_pass_root {
-        echo -e "\x1B[36m""Create pass root""\x1B[0m"
-        echo "Continue?  y/N"
+        echo -e "\x1B[36m""Создать пороль root""\x1B[0m"
+        echo "Продолжить?  y/N"
                 read var
                     if [ "$var" == "y" ]
                     then
-                        echo "Enter new password for root"
+                        echo "Введите пароль для root"
                         passwd
-                    else echo "Skip"
+                    else echo "Пропустили."
                     fi
             }
 #********************************************************************************************20-exit_installer
@@ -345,14 +352,14 @@ function exit_installer {
             }
 #********************************************************************************************z-dialog_my       
 function dialog_my {
-        echo -e "\x1B[33m""___Select_menu_item__________""\x1B[0m"
-        echo -e "\x1B[36m""1)Continue:""\x1B[0m"${stepn[$(($step+1))]}
-        echo -e "\x1B[36m""2)Next:""\x1B[0m"${stepn[$(($step+2))]}
-        echo -e "\x1B[36m""3)Repeat:""\x1B[0m"${stepn[$step]} 
-        echo -e "\x1B[36m""4)Come back:""\x1B[0m"${stepn[$(($step-1))]}
-        echo -e "\x1B[36m""5)return to start""\x1B[0m"
-        echo -e "\x1B[36m""6)Select item""\x1B[0m"
-        echo -e "\x1B[31m""7)exit""\x1B[0m"
+        echo -e "\x1B[33m""___Выберите_нужный_пункт__________""\x1B[0m"
+        echo -e "\x1B[36m""1)Продолжить:""\x1B[0m"${stepn[$(($step+1))]}
+        echo -e "\x1B[36m""2)Следующий:""\x1B[0m"${stepn[$(($step+2))]}
+        echo -e "\x1B[36m""3)Предыдущий:""\x1B[0m"${stepn[$step]} 
+        echo -e "\x1B[36m""4)Вернуться к:""\x1B[0m"${stepn[$(($step-1))]}
+        echo -e "\x1B[36m""5)Вернуться на старт""\x1B[0m"
+        echo -e "\x1B[36m""6)Список шагов""\x1B[0m"
+        echo -e "\x1B[31m""7)Выйти""\x1B[0m"
         read var
         echo -e "\x1B[33m""______________V______________""\x1B[0m"
 
@@ -362,32 +369,32 @@ function dialog_my {
                     echo -e "\x1B[36m""Continue!""\x1B[0m"
                 elif [ "$var" == "2" ]
                 then
-                    echo -e "\x1B[36m""Skip "${stepn[$(($step+1))]}", Jamp to next!""\x1B[0m"
+                    echo -e "\x1B[36m""Пропустили "${stepn[$(($step+1))]}", переход к следующему!""\x1B[0m"
                     step=$(($step+2))
                 elif [ "$var" == "3" ]
                 then
-                    echo -e "\x1B[36m""Repeat!""\x1B[0m"  
+                    echo -e "\x1B[36m""Повтор!""\x1B[0m"  
                 elif [ "$var" == "4" ]
                 then
                     step=$(($step-1))
-                    echo -e "\x1B[36m""Come back!""\x1B[0m"
+                    echo -e "\x1B[36m""Возврощаемся!""\x1B[0m"
                 elif [ "$var" == "5" ]
                 then
                     step=0
-                    echo -e "\x1B[36m""Back to start!""\x1B[0m"
+                    echo -e "\x1B[36m""Возврощаемся на start!""\x1B[0m"
                 elif [ "$var" == "6" ]
                 then
                     echo -e "\x1B[36m""select and enter number item""\x1B[0m"
-                    echo -e "\x1B[36m""1) inet_test                11) grub_pkg_install""\x1B[0m"
-                    echo -e "\x1B[36m""2) parted_disk              12) pakages_install""\x1B[0m"
-                    echo -e "\x1B[36m""3) assign_sections          13) host_name""\x1B[0m"
-                    echo -e "\x1B[36m""4) formating_disk           14) time_zone""\x1B[0m"
-                    echo -e "\x1B[36m""5) mounting_disk            15) edit_locale""\x1B[0m"
-                    echo -e "\x1B[36m""6) edit_mirrorlist          16) create_linux_img""\x1B[0m"
-                    echo -e "\x1B[36m""7) pacman_update            17) grub_config""\x1B[0m"
-                    echo -e "\x1B[36m""8) istall_base              18) bootloader_installation""\x1B[0m"
-                    echo -e "\x1B[36m""9) generate_fstab           19) create_pass_root""\x1B[0m"
-                    echo -e "\x1B[36m""10) exit_goto_arch_chroot   20) exit_installer""\x1B[0m"
+                    echo -e "\x1B[36m""1) Интернет, проверка соединения                                          11) Установка пакета загрузчика""\x1B[0m"
+                    echo -e "\x1B[36m""2) Разбить диск на разделы                                                      12) Установка дополнительных пакетов""\x1B[0m"
+                    echo -e "\x1B[36m""3) Выбор точки монтирования для каждого раздела          13) Имя машины""\x1B[0m"
+                    echo -e "\x1B[36m""4) Форматирование разделов                                                  14) Выбор часового пояса""\x1B[0m"
+                    echo -e "\x1B[36m""5) Монтирование разделов                                                      15) Язык системы""\x1B[0m"
+                    echo -e "\x1B[36m""6) Редактировать список зеркал                                             16) Создаем linux_img""\x1B[0m"
+                    echo -e "\x1B[36m""7) Обновляем список пакетов pacman                                   17) Обновляем конфигурацию GRUB""\x1B[0m"
+                    echo -e "\x1B[36m""8) Установка основных пакетов                                              18) Установка загрузчика""\x1B[0m"
+                    echo -e "\x1B[36m""9) Генерация fstab                                                                     19) Создать пороль root""\x1B[0m"
+                    echo -e "\x1B[36m""10) Переходим в arch-chroot                                                   20) exit_installer""\x1B[0m"
                     read step
                     if [ "$step" == "" ]
                     then echo "skip"
