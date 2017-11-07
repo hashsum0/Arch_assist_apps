@@ -1,5 +1,6 @@
 #!/bin/bash
-
+loadkeys ru
+setfont cyr-sun16
 echo -e "\x1B[34m \n" \
 "                   -\`                     \n" \
 "                  .o+\`                    \n" \
