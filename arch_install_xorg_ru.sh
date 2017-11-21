@@ -21,35 +21,6 @@
 loadkeys ru
 setfont cyr-sun16
 step=0
-#********************************************************************************************create_user
-function create_user {
-        echo -e "\x1B[36m""Создать пользователя\v""\x1B[0m"
-        echo "Продолжить?  y/N"
-                read var
-                    if [ "$var" == "y" ];then
-                         echo "Введите имя пользователя"
-                         read namevar
-                         useradd -m -g users -G wheel -s /bin/bash $namevar
-                         echo "Введите пароль пользователя"
-                         passwd $namevar
-                    else echo "Пропустили."
-                    fi
-            }
-#********************************************************************************************sudo_for_user
-function sudo_for_user {
-        echo -e "\x1B[36m""Дать пользователю привилегии root\v""\x1B[0m"
-        echo -e "\x1B[36m""Нужно отредактировать файл /etc/sudores""\x1B[0m"
-        echo -e "\x1B[36m""Либо раскоментировать строчку #%wheel ALL=(ALL) ALL""\x1B[0m"
-        echo -e "\x1B[36m""Либо под строчкой root ALL=(ALL) ALL""\x1B[0m"
-        echo -e "\x1B[36m""вписать: user_name ALL=(ALL) ALL""\x1B[0m"
-        echo "Продолжить?  y/N"
-                read var
-                    if [ "$var" == "y" ]
-                    then
-                         nano /etc/sudores
-                    else echo "Пропустили."
-                    fi
-            }
 #********************************************************************************************xorg_component_install
 function xorg_component_install {
         echo -e "\x1B[36m""Установка Xorg и его компонентов\v""\x1B[0m"
