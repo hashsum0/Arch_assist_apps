@@ -26,11 +26,11 @@ clear
 #pacman -Sy vim p7zip ranger reflector
 #/usr/bin/reflector --protocol http --latest 30 --number 20 --sort rate --save /etc/pacman.d/mirrorlist
 #start
-#d_target=""
-#d_boot=""
-#d_root=""
-#d_swap=""
-#d_home=""
+d_target=""
+d_boot=""
+d_root=""
+d_swap=""
+d_home=""
 #EFI "e", BIOS "b"
 mng_boot="b"
 editor=nano
@@ -167,7 +167,6 @@ function formating_disk {
                         clear
                         echo -e "\x1B[31m""Форматирование закончено, выводим результат:""\x1B[0m"
                             lsblk -f
-                                        read -s -n1 -p $'\x1B[32m Нажмите любую клавишу\x1B[0m'
                         }
 #********************************************************************************************5-mounting_disk
 function mounting_disk {        
@@ -320,7 +319,7 @@ function edit_locale {
             echo "Продолжить?  Y/n"
                 read var
                     if [[ -z  "$var" || "$var" == "Y" || "$var" == "y" ]];then
-                     echo -e "en_US.UTF-8\nru_RU.UTF-8" >> /etc/locale.gen
+                     echo -e "en_US.UTF-8 UTF-8\nru_RU.UTF-8 UTF-8" >> /etc/locale.gen
                 else echo "Пропустили."
                 fi
             clear
