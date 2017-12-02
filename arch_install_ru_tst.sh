@@ -32,7 +32,7 @@ d_root=""
 d_swap=""
 d_home=""
 #EFI "e", BIOS "b"
-mng_boot="b"
+mng_boot="e"
 editor=nano
 step=0
 #********************************************************************************************1-inet_test
@@ -117,7 +117,7 @@ function formating_disk {
             echo "Продолжить?  Y/n"
                 read var
                     if [[ -z  "$var" || "$var" == "Y" || "$var" == "y" ]];then
-                        if [[ -z "$d_target" && -z "$d_boot" && -z "$d_root" && -z "$d_home" ]]
+                        if [[ -z "$d_target" || -z "$d_boot" || -z "$d_root" || -z "$d_home" ]]
                         then
                             assign_sections
                         fi
@@ -125,6 +125,7 @@ function formating_disk {
                         do
                             if [ "$mng_boot" == "b" ];then
                                 mkfs.ext2 $d_boot
+                                read -t 3
                                 if [[ $(lsblk -f $d_boot | awk '/sd/{print $2}') == "ext2" ]];then
                                     echo "$d_boot format ext2 Ok"
                                 else
@@ -135,6 +136,7 @@ function formating_disk {
                             fi
                             if [ "$mng_boot" == "e" ];then
                                 mkfs.vfat $d_boot
+                                read -t 3
                                 if [[ $(lsblk -f $d_boot | awk '/sd/{print $2}') == "vfat" ]];then
                                     echo "$d_boot format ext2 Ok"
                                 else
@@ -144,6 +146,7 @@ function formating_disk {
                                 fi
                             fi
                             mkfs.ext4 $d_root
+                            read -t 3
                             if [[ $(lsblk -f $d_root | awk '/sd/{print $2}') == "ext4" ]];then
                                 echo "$d_root format ext4 Ok"
                             else
@@ -152,6 +155,7 @@ function formating_disk {
                                 break
                             fi
                             mkfs.ext4 $d_home
+                            read -t 3
                             if [[ $(lsblk -f $d_home | awk '/sd/{print $2}') == "ext4" ]];then
                                 echo "$d_home format ext4 Ok"
                                 read -s -n1 -p $'\x1B[32m Нажмите любую клавишу\x1B[0m'
@@ -174,7 +178,7 @@ function mounting_disk {
             echo "Продолжить?  Y/n"
                 read var
                     if [[ -z  "$var" || "$var" == "Y" || "$var" == "y" ]];then
-                        if [[ -z "$d_target" && -z "$d_boot" && -z "$d_root" && -z "$d_home" ]]
+                        if [[ -z "$d_target" || -z "$d_boot" || -z "$d_root" || -z "$d_home" ]]
                         then
                             assign_sections
                         fi
@@ -266,8 +270,6 @@ function goto_arch_chroot {
                 read var
                     if [[ -z  "$var" || "$var" == "Y" || "$var" == "y" ]];then
                         cp $0 /mnt/root
-                        cp arch_install_xorg_ru.sh /mnt/root
-                        chmod 755 /mnt/root/arch_install_xorg_ru.sh
                         chmod 755 /mnt/root/$(basename "$0")
                         arch-chroot /mnt /root/$(basename "$0") --chroot $d_target
                         rm /mnt/root/$(basename "$0")
@@ -319,7 +321,8 @@ function edit_locale {
             echo "Продолжить?  Y/n"
                 read var
                     if [[ -z  "$var" || "$var" == "Y" || "$var" == "y" ]];then
-                     echo -e "en_US.UTF-8 UTF-8\nru_RU.UTF-8 UTF-8" >> /etc/locale.gen
+                     echo -e "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+                     echo -e "ru_RU.UTF-8 UTF-8" >> /etc/locale.gen
                 else echo "Пропустили."
                 fi
             clear
@@ -399,6 +402,44 @@ function create_user {
                     else echo "Пропустили."
                     fi
             }            
+#********************************************************************************************xorg_component_install
+function xorg_component_install {
+        echo -e "\x1B[36m""Установка Xorg и его компонентов\v""\x1B[0m"
+        echo -e "\x1B[36m""Будут установлены:xorg-server xorg-xinit mesa xorg-drivers""\x1B[0m"
+        echo "Продолжить?  y/N"
+                read var
+                    if [ "$var" == "y" ]
+                    then
+                         pacman -S xorg-server xorg-xinit mesa xorg-drivers
+			 read -s -n1 "Нажмите любую клавишу."
+                    else echo "Пропустили."
+                    fi
+		    
+            }
+#********************************************************************************************alsa_component_install
+function alsa_component_install {
+        echo -e "\x1B[36m""Установка компанентов alsa\v""\x1B[0m"
+        echo "Продолжить?  y/N"
+                read var
+                    if [ "$var" == "y" ]
+                    then
+                         pacman -S alsa-lib alsa-utils alsa-oss alsa-plugins
+			 read -s -n1 "Нажмите любую клавишу."
+                    else echo "Пропустили."
+                    fi
+            }
+#********************************************************************************************font_install
+function font_install {
+        echo -e "\x1B[36m""Установка шрифтов\v""\x1B[0m"
+        echo "Продолжить?  y/N"
+                read var
+                    if [ "$var" == "y" ]
+                    then
+                          pacman -S adobe-source-code-pro-fonts cantarell-fonts ttf-dejavu terminus-font ttf-droid ttf-font-awesome ttf-liberation ttf-ubuntu-font-family ttf-hack
+			 read -s -n1 "Нажмите любую клавишу."
+                    else echo "Пропустили."
+                    fi
+}
 #********************************************************************************************menu_installer      
 function dialog_my {
         echo -e "\x1B[36m""\t\t\t\tШаг ($step): ${stepn[$(($step))]} выполнен(а) или пропущен(а) пользователем \v ""\x1B[0m"
@@ -488,6 +529,9 @@ function dialog_my_chroot {
                 echo -e "\x1B[36m"" 6) Установка загрузчика""\x1B[0m"
                 echo -e "\x1B[36m"" 7) Создать пороль root""\x1B[0m"
                 echo -e "\x1B[36m"" 8) Создать пользователя и дать ему привилегии root""\x1B[0m"
+                echo -e "\x1B[36m"" 9) Установка xorg""\x1B[0m"
+		echo -e "\x1B[36m"" 10) Установка alsa(звук)""\x1B[0m"
+                echo -e "\x1B[36m"" 11) Установка шрифтов""\x1B[0m"
                 echo -e "\x1B[33m""______________________________________V_________________________________________________\v\v""\x1B[0m"
                 read step
                 if [ "$step" == "" ]
@@ -570,6 +614,9 @@ stepn_chr=(
    'Устанавливаем загрузчик'
    'Создаем пароль root'
    'Создаем пользователя и даем ему привилегии root'
+   'Устанавливаем XORG'
+   'Устанавливаем ALSA'
+   'Устанавливаем шрифты'
    'Выходим'
       )
 #********************************************************************************************main
@@ -616,7 +663,10 @@ step=0
              6  ) bootloader_installation ;;
              7  ) create_pass_root ;;
              8  ) create_user      ;;
-             9  ) exit_chroot      ;;
+             9  ) xorg_component_install  ;;
+             10 ) alsa_component_install  ;;
+             11 ) font_install     ;;
+             12 ) exit_chroot      ;;
         esac
     
         read -s -n1 -p $'\x1B[32mНажмите любую клавишу для продолжения\x1B[0m'
