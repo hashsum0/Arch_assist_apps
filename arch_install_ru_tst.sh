@@ -398,7 +398,6 @@ function create_user {
                          useradd -m -g users -G wheel -s /bin/bash $namevar
                          echo "Введите пароль пользователя"
                          passwd $namevar
-                         mv /root/arch_install_xorg_ru.sh /home/$namevar/
                     else echo "Пропустили."
                     fi
             }            
