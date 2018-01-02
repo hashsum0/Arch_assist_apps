@@ -682,6 +682,7 @@ step=0
              10 ) alsa_component_install  ;;
              11 ) font_install     ;;
              12 ) exit_chroot      ;;
+             50 ) back_to_menu     ;;
         esac
     
         read -s -n1 -p $'\x1B[32mНажмите любую клавишу для продолжения\x1B[0m'
