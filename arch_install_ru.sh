@@ -511,6 +511,7 @@ function dialog_my_chroot {
         echo -e "\x1B[36m""\t\t\t\t3) Повторить предыдущий шаг:""\x1B[0m"${stepn_chr[$step]} 
         echo -e "\x1B[36m""\t\t\t\t4) Вернуться на старт""\x1B[0m"
         echo -e "\x1B[36m""\t\t\t\t5) Список шагов""\x1B[0m"
+        echo -e "\x1B[36m""\t\t\t\t6) Выполнить команду""\x1B[0m"
         echo -e "\x1B[31m""\t\t\t\tq) Выйти""\x1B[0m"
         read -s -n1 var
         echo -e "\x1B[33m""\t\t\t\t_______________________________V______________________________""\x1B[0m"
@@ -544,6 +545,12 @@ function dialog_my_chroot {
                 if [ "$step" == "" ]
                 then echo "skip"
                 fi
+            elif [ "$var" == "6" ];then
+                stack=$step
+                echo -e "\x1B[36m""Введите команду которую необходимо выполнить:""\x1B[0m"
+                read var
+                eval $var
+                step=50    
             elif [ "$var" == "q" ];then
                 echo "Выходим..."
                 read -t 2
