@@ -410,10 +410,8 @@ function xorg_component_install {
                     if [ "$var" == "y" ]
                     then
                          pacman -S xorg-server xorg-xinit mesa xorg-drivers
-			 read -s -n1 "Нажмите любую клавишу."
                     else echo "Пропустили."
                     fi
-		    
             }
 #********************************************************************************************alsa_component_install
 function alsa_component_install {
@@ -423,7 +421,6 @@ function alsa_component_install {
                     if [ "$var" == "y" ]
                     then
                          pacman -S alsa-lib alsa-utils alsa-oss alsa-plugins
-			 read -s -n1 "Нажмите любую клавишу."
                     else echo "Пропустили."
                     fi
             }
@@ -435,10 +432,14 @@ function font_install {
                     if [ "$var" == "y" ]
                     then
                           pacman -S adobe-source-code-pro-fonts cantarell-fonts ttf-dejavu terminus-font ttf-droid ttf-font-awesome ttf-liberation ttf-ubuntu-font-family ttf-hack
-			 read -s -n1 "Нажмите любую клавишу."
                     else echo "Пропустили."
                     fi
 }
+#********************************************************************************************back_to_menu
+function back_to_menu {
+        echo -e "\x1B[36m""Возврощаемся в меню""\x1B[0m"
+              step=$stack       
+            }
 #********************************************************************************************menu_installer      
 function dialog_my {
         echo -e "\x1B[36m""\t\t\t\tШаг ($step): ${stepn[$(($step))]} выполнен(а) или пропущен(а) пользователем \v ""\x1B[0m"
@@ -448,6 +449,7 @@ function dialog_my {
         echo -e "\x1B[36m""\t\t\t\t3) Повторить предыдущий шаг:""\x1B[0m"${stepn[$step]} 
         echo -e "\x1B[36m""\t\t\t\t4) Вернуться на старт""\x1B[0m"
         echo -e "\x1B[36m""\t\t\t\t5) Список шагов""\x1B[0m"
+        echo -e "\x1B[36m""\t\t\t\t6) Выполнить команду""\x1B[0m"
         echo -e "\x1B[31m""\t\t\t\tq) Выйти""\x1B[0m"
         read -s -n1 var
         echo -e "\x1B[33m""\t\t\t\t_______________________________V______________________________""\x1B[0m"
@@ -486,6 +488,12 @@ function dialog_my {
                     if [ "$step" == "" ]
                     then echo "skip"
                     fi
+                elif [ "$var" == "6" ];then
+                stack=$step
+                echo -e "\x1B[36m""Введите команду которую необходимо выполнить:""\x1B[0m"
+                read var
+                eval $var
+                step=50
                 elif [ "$var" == "q" ];then
                     echo "Выходим..."
                     read -t 2
@@ -637,6 +645,7 @@ echo -e "\x1B[36m""Wellcome to the ArchLinux base install""\x1B[0m"
               8  ) generate_fstab   ;;
               9  ) goto_arch_chroot ;;
               10 ) exit_inst        ;;
+              50 ) back_to_menu     ;;
         esac
 
     read -s -n1 -p $'\x1B[32mНажмите любую клавишу для продолжения\x1B[0m'
